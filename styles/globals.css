@@ -1,26 +1,138 @@
 @import "tailwindcss";
 
+/* ── Brand tokens ── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --gradient-start: #e27c00;
+  --gradient-end: #ffa500;
+  --accent-gradient: linear-gradient(135deg, #e27c00 0%, #ffa500 50%, #e27c00 100%);
+  --accent-gradient-hover: linear-gradient(135deg, #ffa500 0%, #e27c00 100%);
+  --emerald: #0f4c35;
+  --font-poppins: 'Poppins', sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ── Dark theme (default) ── */
+:root,
+[data-theme="dark"] {
+  --bg: #000000;
+  --bg-surface: rgba(255, 255, 255, 0.05);
+  --bg-surface-hover: rgba(255, 255, 255, 0.1);
+  --text: #ffffff;
+  --text-muted: #e0e0e0;
+  --text-subtle: #888888;
+  --border: rgba(255, 255, 255, 0.12);
+  --border-accent: rgba(226, 124, 0, 0.4);
+  --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+
+  /* backward compat */
+  --Background: #000000;
+  --white: #ffffff;
+  --light-gray: #bdbdbd;
+  --link-color: #e0e0e0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Light theme ── */
+[data-theme="light"] {
+  --bg: #ffffff;
+  --bg-surface: rgba(0, 0, 0, 0.04);
+  --bg-surface-hover: rgba(0, 0, 0, 0.08);
+  --text: #000000;
+  --text-muted: #333333;
+  --text-subtle: #666666;
+  --border: rgba(0, 0, 0, 0.1);
+  --border-accent: rgba(226, 124, 0, 0.25);
+  --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+
+  /* backward compat */
+  --Background: #ffffff;
+  --white: #000000;
+  --light-gray: #444444;
+  --link-color: #333333;
+}
+
+/* ── Reset ── */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+html {
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+body::-webkit-scrollbar {
+  width: 0.5rem;
+  border-radius: 0.5rem;
+}
+body::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 0.5rem;
+}
+body::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+/* ── Parallax ── */
+.parallax {
+  overflow: hidden;
+  margin: 0;
+  white-space: nowrap;
+  display: flex;
+  flex-wrap: nowrap;
+}
+.parallax .scroller {
+  display: flex;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+}
+.scroller span {
+  display: block;
+  margin-right: 5rem;
+}
+
+/* ── Preloader states ── */
+.not_complete {
+  display: none;
+}
+.complete {
+}
+
+/* ── Animations ── */
+@keyframes afroFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes drawerSlideIn {
+  from { transform: translateY(-100%); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-12px); }
+}
+
+@keyframes counterUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }

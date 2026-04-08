@@ -1,0 +1,9 @@
+export { default as BeforeHeroSection } from './BeforeHeroSection';
+export { default as HeroSection } from './HeroSection';
+export { default as Featured } from './Featured';
+export { default as OffersSection } from './OffersSection';
+export { default as FinancilaFreedom } from './FinancialFreedom';
+export { default as FAQ } from './FAQ';
+export { default as Footer } from './Footer';
+export { default as Header } from './Header';
+export { default as Preloader } from './Preloader';
