@@ -93,7 +93,7 @@ const HeroSection = () => {
           {isMobile ? (
             <>
               <MaskText phrases={mobilePhrases} tag="h1" />
-              <div style={{ transform: 'translateY(-10px)' }}>
+              <div style={{ transform: 'translateY(-10px)', paddingTop: '0rem', paddingBottom: '0.5rem' }}>
                  <MaskText phrases={mobileParagraphPhrases} tag="p" />
               </div>
             </>

@@ -17,7 +17,7 @@ function ParallaxText({ children, baseVelocity = 100 }) {
   const smoothVelocity = useSpring(scrollVelocity, { damping: 50, stiffness: 400 });
   const velocityFactor = useTransform(smoothVelocity, [0, 1000], [0, 5], { clamp: false });
 
-  const x = useTransform(baseX, (v) => `${wrap(-20, -45, v)}%`);
+  const x = useTransform(baseX, (v) => `${wrap(-50, 50, v)}%`);
 
   const directionFactor = useRef(1);
   useAnimationFrame((t, delta) => {
@@ -32,9 +32,9 @@ function ParallaxText({ children, baseVelocity = 100 }) {
   });
 
   return (
-    <div className="parallax">
-      <motion.div className="scroller" style={{ x }}>
-        <span>{children} </span>
+    <div className="parallax" style={{ overflow: 'hidden' }}>
+      <motion.div className="scroller" style={{ x, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <span style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>{children} </span>
         <span>{children} </span>
         <span>{children} </span>
         <span>{children} </span>

@@ -62,62 +62,75 @@ const Featured = () => {
           </motion.div>
         </div>
 
-        <h2 className="featured-title" style={{ 
+        {/* <h2 className="featured-title" style={{ 
           color: 'var(--text-muted)', 
           fontSize: '1rem', 
           fontWeight: 600, 
           textTransform: 'uppercase', 
           marginTop: '8rem',
           letterSpacing: '0.3em',
-          opacity: 0.8
+          opacity: 0.8,
         }}>
           Ils propulsent leurs marques avec Afrolink
-        </h2>
+        </h2> */}
+      </div>
 
-        <div style={{ 
-          position: 'relative', 
-          width: '100vw', 
+      {/* ── Bande logos pleine largeur ── */}
+      {/* <div
+        style={{
+          position: 'relative',
+          width: '100vw',
           left: '50%',
-          right: '50%',
           marginLeft: '-50vw',
-          marginRight: '-50vw',
           marginTop: '4rem',
-          overflow: 'hidden'
-        }}>
-          <ParallaxText baseVelocity={-2}>
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '8rem',
-              padding: '2.5rem 0',
-              filter: dark ? 'brightness(1.5) contrast(1.2)' : 'brightness(0) opacity(0.6)',
-              opacity: 0.9,
-              transform: 'scale(1.35)', // Slightly larger
-              transition: 'all 0.3s ease'
-            }}
+          paddingTop: '3rem',
+          paddingBottom: '3rem',
+          borderTop: dark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.07)',
+          borderBottom: dark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.07)',
+          overflow: 'hidden',
+        }}
+        className="logos-band"
+      >
+        <ParallaxText baseVelocity={-3}>
+          <div
             className="partner-logos-strip"
-            >
-              <Image src={companiesImage} alt="Partner Logo" style={{ height: '55px', width: 'auto', objectFit: 'contain' }} />
-              <Image src={companiesImage} alt="Partner Logo" style={{ height: '55px', width: 'auto', objectFit: 'contain' }} />
-              <Image src={companiesImage} alt="Partner Logo" style={{ height: '55px', width: 'auto', objectFit: 'contain' }} />
-              <Image src={companiesImage} alt="Partner Logo" style={{ height: '55px', width: 'auto', objectFit: 'contain' }} />
-            </div>
-          </ParallaxText>
-        </div>
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              padding: '0 5rem',
+              filter: dark
+                ? 'brightness(1.8) contrast(1.4)'
+                : 'brightness(0.3) opacity(0.7)',
+              transition: 'filter 0.3s ease',
+            }}
+          >
+            <Image
+              src={companiesImage}
+              alt="Logos des partenaires Afrolink"
+              style={{
+                height: '200px',
+                width: 'auto',
+                objectFit: 'contain',
+                display: 'block',
+                margin: '0 3rem',
+              }}
+            />
+          </div>
+        </ParallaxText>
       </div>
 
       <style>{`
         .partner-logos-strip:hover {
-          filter: brightness(2) contrast(1.5) !important;
-          opacity: 1 !important;
+          filter: brightness(2) contrast(1.4) !important;
         }
         @media (max-width: 768px) {
-          .featured-inner { margin-top: 4rem !important; }
-          .featured-title { font-size: 0.8rem !important; margin-top: 5rem !important; letter-spacing: 0.2em !important; }
+          .featured-inner  { margin-top: 4rem !important; }
+          .featured-title  { font-size: 0.8rem !important; margin-top: 5rem !important; letter-spacing: 0.2em !important; }
           .featured-image-container { border-radius: 0.5rem !important; }
-          .featured-div { height: 20rem !important; }
+          .featured-div    { height: 20rem !important; }
+          .logos-band      { padding-top: 2rem !important; padding-bottom: 2rem !important; }
         }
-      `}</style>
+      `}</style> */}
     </section>
   );
 };

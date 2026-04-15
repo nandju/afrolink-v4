@@ -5,7 +5,8 @@ import { useRouter } from 'next/router';
 import AnimatedLink from '@/components/Common/AnimatedLink';
 import GetStartedButton from '@/components/Common/GetStartedButton';
 import { useTheme } from '@/contexts/ThemeContext';
-import afrolinkLogo from '@/public/svgs/logo_Afrolink-removebg-preview_3.png';
+import afrolinkLogoDark from '@/public/svgs/logo_Afrolink-removebg-preview_3.png';
+import afrolinkLogoLight from '@/public/svgs/logo_Afrolink_noir.png';
 import { links } from './constants';
 
 const SunIcon = () => (
@@ -47,6 +48,7 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { dark, toggle } = useTheme();
   const router = useRouter();
+  const headerLogo = dark ? afrolinkLogoDark : afrolinkLogoLight;
 
   useEffect(() => {
     const handleRouteChange = () => setIsOpen(false);
@@ -88,7 +90,7 @@ const Header = () => {
           {/* Left: Logo + Links */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '3rem' }}>
             <Link href="/" style={{ display: 'flex', alignItems: 'center', transition: 'transform 0.2s ease' }} className="logo-link">
-              <Image src={afrolinkLogo} alt="Logo Afrolink" priority style={{ width: '120px', height: 'auto', objectFit: 'contain' }} />
+                <Image src={headerLogo} alt="Logo Afrolink" priority style={{ width: '120px', height: 'auto', objectFit: 'contain' }} />
             </Link>
 
             {/* Desktop nav */}
@@ -190,7 +192,7 @@ const Header = () => {
       >
         {/* Drawer header (absolute top) */}
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 5%', height: '80px' }}>
-          <Image src={afrolinkLogo} alt="Logo Afrolink" priority style={{ width: '100px', height: 'auto' }} />
+          <Image src={headerLogo} alt="Logo Afrolink" priority style={{ width: '100px', height: 'auto' }} />
           <button
             onClick={() => setIsOpen(false)}
             style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: '12px', width: '42px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text)' }}

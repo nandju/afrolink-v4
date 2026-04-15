@@ -6,7 +6,8 @@
   --gradient-end: #ffa500;
   --accent-gradient: linear-gradient(135deg, #e27c00 0%, #ffa500 50%, #e27c00 100%);
   --accent-gradient-hover: linear-gradient(135deg, #ffa500 0%, #e27c00 100%);
-  --emerald: #0f4c35;
+  --emerald: #e27c00;
+  /* --emerald: #0f4c35; */
   --font-poppins: 'Poppins', sans-serif;
 }
 

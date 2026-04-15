@@ -1,5 +1,6 @@
 import Image from 'next/image';
-import raftFooterLogo from '@/public/svgs/logo_Afrolink-removebg-preview.png';
+import raftFooterLogoDark from '@/public/svgs/logo_Afrolink-removebg-preview.png';
+import raftFooterLogoLight from '@/public/svgs/logo_Afrolink_noir.png';
 import qrCode from '@/public/svgs/qr_code.svg';
 import icGooglePlaystore from '@/public/svgs/ic_google_playstore.svg';
 import icBaselineApple from '@/public/svgs/ic_baseline_apple.svg';
@@ -12,13 +13,18 @@ const linksArr = [
   { title: 'Ressources', links: ['Contact', 'FAQ', 'Blog'] },
 ];
 
+import { useTheme } from '@/contexts/ThemeContext';
+
 const Footer = () => {
+  const { dark } = useTheme();
+  const footerLogo = dark ? raftFooterLogoDark : raftFooterLogoLight;
+
   return (
     <footer style={{ paddingBottom: '3.5rem' }}>
       <main style={{ width: '90%', maxWidth: '1440px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '3.75rem' }}>
         {/* Logo */}
         <div style={{ width: '12rem', height: '7.5rem' }}>
-          <Image src={raftFooterLogo} alt="Logo Afrolink en pied de page" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+          <Image src={footerLogo} alt="Logo Afrolink en pied de page" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
         </div>
 
         {/* Main content */}
@@ -74,8 +80,10 @@ const Footer = () => {
 
       <style>{`
         @media (max-width: 768px) {
-          .footer-middle { flex-direction: column !important; gap: 3.5rem !important; }
-          .footer-nav { grid-template-columns: 1fr 1fr !important; gap: 3rem 3.75rem !important; }
+          .footer-middle { flex-direction: column !important; gap: 3.5rem !important; align-items: stretch !important; }
+          .footer-nav { grid-template-columns: 1fr !important; gap: 2rem 0 !important; }
+          .footer-nav > div { min-width: 0 !important; width: 100% !important; }
+          .footer-middle > div { width: 100%; }
         }
       `}</style>
     </footer>

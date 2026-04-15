@@ -27,7 +27,7 @@ const services = [
   {
     number: '05',
     title: 'Conception web & UI/UX',
-    description: 'Interfaces modernes, rapides et pensées pour l'expérience utilisateur.',
+    description: "Interfaces modernes, rapides et pensées pour l'expérience utilisateur.",
   },
   {
     number: '06',

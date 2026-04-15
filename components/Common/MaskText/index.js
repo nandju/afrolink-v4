@@ -9,7 +9,7 @@ const animate = {
   }),
 };
 
-const MaskText = ({ phrases, tag }) => {
+const MaskText = ({ phrases, tag, style, className }) => {
   const body = useRef(null);
   const isInView = useInView(body, { once: true, margin: '-10%', amount: 0.4 });
 
@@ -18,19 +18,19 @@ const MaskText = ({ phrases, tag }) => {
       {phrases.map((phrase, index) => (
         <div key={index} style={{ overflow: 'hidden' }}>
           {tag === 'h1' ? (
-            <motion.h1 variants={animate} initial="initial" animate={isInView ? 'open' : ''} custom={index}>
+            <motion.h1 className={className} style={style} variants={animate} initial="initial" animate={isInView ? 'open' : ''} custom={index}>
               {phrase}
             </motion.h1>
           ) : tag === 'h2' ? (
-            <motion.h2 variants={animate} initial="initial" animate={isInView ? 'open' : ''} custom={index}>
+            <motion.h2 className={className} style={style} variants={animate} initial="initial" animate={isInView ? 'open' : ''} custom={index}>
               {phrase}
             </motion.h2>
           ) : tag === 'h3' ? (
-            <motion.h3 variants={animate} initial="initial" animate={isInView ? 'open' : ''} custom={index}>
+            <motion.h3 className={className} style={style} variants={animate} initial="initial" animate={isInView ? 'open' : ''} custom={index}>
               {phrase}
             </motion.h3>
           ) : (
-            <motion.p variants={animate} initial="initial" animate={isInView ? 'open' : ''} custom={index}>
+            <motion.p className={className} style={style} variants={animate} initial="initial" animate={isInView ? 'open' : ''} custom={index}>
               {phrase}
             </motion.p>
           )}

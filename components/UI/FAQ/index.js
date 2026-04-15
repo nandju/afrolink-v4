@@ -17,9 +17,9 @@ const FAQ = () => {
       <div style={{ width: '90%', maxWidth: '1440px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '6.25rem' }}>
         <div className="faq-title">
           {isMobile ? (
-            <MaskText phrases={mobileHeaderPhrase} tag="h1" />
+            <MaskText phrases={mobileHeaderPhrase} tag="h1" style={{ fontWeight: "900" }} />
           ) : (
-            <MaskText phrases={desktopHeaderPhrase} tag="h1" />
+            <MaskText phrases={desktopHeaderPhrase} tag="h1" style={{ fontWeight: "900" }} />
           )}
         </div>
 

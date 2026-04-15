@@ -12,7 +12,7 @@ const steps = [
   {
     number: '02',
     title: 'Stratégiser',
-    description: 'Co-construction d'un plan de communication solide et mesurable.',
+    description: "Co-construction d'un plan de communication solide et mesurable.",
   },
   {
     number: '03',

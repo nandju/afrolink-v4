@@ -10,10 +10,11 @@ const OfferCard = ({ offer }) => (
       overflow: 'hidden',
       height: '31.25rem',
       borderRadius: '0.75rem',
-      border: '1px solid rgba(255,255,255,0.04)',
+      border: '1px solid var(--border)',
       display: 'flex',
       flexDirection: 'column',
-      background: `url(${gridBackground.src}) #131313 no-repeat`,
+      background: `url(${gridBackground.src}) var(--bg-surface) no-repeat`,
+      backgroundSize: 'cover',
     }}
   >
     <div
@@ -27,7 +28,7 @@ const OfferCard = ({ offer }) => (
       <Image src={offer.illustration} alt={`Illustration ${offer.title}`} style={{ width: '100%', objectFit: 'contain' }} />
     </div>
     <div style={{ padding: '2.5rem', paddingTop: '3.25rem', maxWidth: '32.25rem', display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: 'auto' }}>
-      <MaskText phrases={[offer.title]} tag="h2" />
+      <MaskText phrases={[offer.title]} tag="h2" style={{ fontWeight: 900, fontSize: '1.5rem' }} />
       <p style={{ color: 'var(--link-color)', fontSize: '1rem', fontWeight: 400, lineHeight: '1.5rem' }}>{offer.details}</p>
     </div>
   </div>
@@ -53,7 +54,7 @@ const OffersSection = () => {
           className="offers-header"
         >
           <div style={{ fontSize: '4.75rem', fontWeight: 400 }} className="offers-h1">
-            <MaskText phrases={desktopHeaderPhrases} tag="h1" />
+            <MaskText phrases={desktopHeaderPhrases} tag="h1" style={{ fontWeight: 900 }} />
           </div>
           {isMobile ? (
             <MaskText phrases={mobileParagraphPhrase} tag="p" />
@@ -77,8 +78,8 @@ const OffersSection = () => {
 
       <style>{`
         .offers-inner { margin-top: 12.38rem; }
-        .offers-header h1 { font-size: 4.75rem; font-weight: 400; }
-        .offers-header p { max-width: 41.75rem; color: #989898; font-size: 1.25rem; font-weight: 400; line-height: 1.75rem; }
+        .offers-header h1 { font-size: 4.75rem; font-weight: 400; color: var(--text); }
+        .offers-header p { max-width: 41.75rem; color: var(--text-muted); font-size: 1.25rem; font-weight: 400; line-height: 1.75rem; }
         @media (max-width: 768px) {
           .offers-inner { margin-top: 6.44rem !important; }
           .offers-header { margin-bottom: 5rem !important; }

@@ -8,12 +8,22 @@ const CircularTransition = ({ children }) => {
   const router = useRouter();
 
   useEffect(() => {
+    const pageLabels = {
+      '/': 'Accueil',
+      '/services': 'Services',
+      '/work': 'Notre travail',
+      '/insights': 'Actualités',
+      '/afrolink': 'AfroLink',
+      '/schedule-call': 'Planifier un appel',
+    };
+
     const handleStart = (url) => {
       const path = url.split('?')[0];
-      const pageName =
-        path === '/'
-          ? 'Accueil'
-          : path.replace('/', '').charAt(0).toUpperCase() + path.slice(2);
+      const pageName = pageLabels[path] ||
+        path
+          .replace('/', '')
+          .replace(/-/g, ' ')
+          .replace(/\b\w/g, (char) => char.toUpperCase());
       setTargetPage(pageName);
       setIsTransitioning(true);
     };

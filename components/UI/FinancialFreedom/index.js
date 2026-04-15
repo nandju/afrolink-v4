@@ -24,7 +24,7 @@ const FinancialFreedom = () => {
   const isMobile = useIsMobile();
 
   return (
-    <section style={{ marginTop: '11.25rem', background: '#000000', padding: '8rem 0' }} className="ff-wrapper">
+    <section style={{ marginTop: '11.25rem', background: 'var(--bg)', padding: '8rem 0' }} className="ff-wrapper">
       <div style={{ width: '90%', maxWidth: '1440px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }} className="ff-inner">
         {/* Header */}
         <header
@@ -34,12 +34,12 @@ const FinancialFreedom = () => {
           {isMobile ? (
             <>
               <MaskText phrases={mobileHeaderPhrase} tag="h1" />
-              <div style={{ color: '#ffffff', opacity: 0.8 }}><MaskText phrases={mobileParagraphPhrase} tag="p" /></div>
+              <div style={{ color: 'var(--text-muted)', opacity: 0.85 }}><MaskText phrases={mobileParagraphPhrase} tag="p" /></div>
             </>
           ) : (
             <>
               <MaskText phrases={desktopHeaderPhrase} tag="h1" />
-              <div style={{ color: '#ffffff', opacity: 0.8 }}><MaskText phrases={desktopParagraphPhrase} tag="p" /></div>
+              <div style={{ color: 'var(--text-muted)', opacity: 0.85 }}><MaskText phrases={desktopParagraphPhrase} tag="p" /></div>
             </>
           )}
         </header>
@@ -68,27 +68,39 @@ const FinancialFreedom = () => {
             <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                 <Image src={edge.icon} alt={edge.point} style={{ filter: 'brightness(0) invert(1)' }} />
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 600, color: '#ffffff' }}>{edge.point}</h3>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--text)' }}>{edge.point}</h3>
               </div>
-              <p style={{ fontSize: '1rem', color: '#ffffff', opacity: 0.7, lineHeight: 1.6 }}>{edge.details}</p>
+              <p style={{ fontSize: '1rem', color: 'var(--text-muted)', opacity: 0.85, lineHeight: 1.6 }}>{edge.details}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* Brief note */}
-      <div style={{ maxHeight: '54.75rem', padding: '8.25rem 4.5rem', background: 'var(--accent-gradient)' }} className="ff-brief-note">
+      <div
+        style={{
+          maxHeight: '54.75rem',
+          padding: '8.25rem 4.5rem',
+          background: 'var(--accent-gradient)',
+          marginTop: '6rem', // ✅ uniquement en haut
+        }}
+        className="ff-brief-note"
+      >
         {isMobile ? (
-          <div style={{ color: '#000000' }}><MaskText phrases={mobileBriefNotePhrase} tag="p" /></div>
+          <div style={{ color: 'var(--text)' }}>
+            <MaskText phrases={mobileBriefNotePhrase} tag="p" />
+          </div>
         ) : (
-          <div style={{ color: '#000000' }}><MaskText phrases={desktopBriefNotePhrase} tag="p" /></div>
+          <div style={{ color: '#000000' }}>
+            <MaskText phrases={desktopBriefNotePhrase} tag="p" />
+          </div>
         )}
       </div>
 
       <style>{`
-        .ff-header h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800; color: #ffffff; line-height: 1.1; }
-        .ff-header p { font-size: 1.25rem; line-height: 1.6; }
-        .ff-brief-note p { font-size: clamp(3rem, 6vw, 6rem); font-weight: 700; max-width: 1440px; margin: 0 auto; line-height: 1.1; letter-spacing: -0.02em; }
+        .ff-header h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800; color: var(--text); line-height: 1.1; }
+        .ff-header p { font-size: 1.25rem; line-height: 1.6; color: var(--text-muted); }
+        .ff-brief-note p { font-size: clamp(3rem, 6vw, 6rem); font-weight: 700; max-width: 1440px; margin: 0 auto; line-height: 1.1; letter-spacing: -0.02em; color: var(--text); }
         @media (max-width: 768px) {
           .ff-wrapper { margin-top: 6rem !important; padding: 4rem 0 !important; }
           .ff-header { margin-bottom: 4rem !important; }

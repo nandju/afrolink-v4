@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import "@/styles/globals.css";
 import { Poppins } from 'next/font/google';
 import { ThemeProvider } from '@/contexts/ThemeContext';
@@ -13,11 +14,17 @@ const poppins = Poppins({
 export default function App({ Component, pageProps }) {
   return (
     <ThemeProvider>
-      <div className={`${poppins.variable} ${poppins.className}`} suppressHydrationWarning>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </div>
+      <>
+        <Head>
+          <title>Afrolink</title>
+          <meta name="application-name" content="Afrolink" />
+        </Head>
+        <div className={`${poppins.variable} ${poppins.className}`} suppressHydrationWarning>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </div>
+      </>
     </ThemeProvider>
   );
 }
