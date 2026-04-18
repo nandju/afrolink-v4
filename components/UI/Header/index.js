@@ -46,6 +46,7 @@ const CloseIcon = () => (
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { dark, toggle } = useTheme();
   const router = useRouter();
   const headerLogo = dark ? afrolinkLogoDark : afrolinkLogoLight;
@@ -65,6 +66,14 @@ const Header = () => {
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const isActive = (url) => router.pathname === url;
 
   return (
@@ -77,6 +86,7 @@ const Header = () => {
           left: 0,
           right: 0,
           padding: '1.25rem 0',
+          background: isScrolled ? 'rgba(var(--bg-rgb), 0.95)' : 'transparent',
           // borderBottom: '1px solid var(--border)',
           zIndex: 100,
           transition: 'all 0.3s ease',
