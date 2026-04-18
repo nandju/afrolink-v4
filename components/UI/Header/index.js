@@ -77,9 +77,7 @@ const Header = () => {
           left: 0,
           right: 0,
           padding: '1.25rem 0',
-          background: 'rgba(var(--bg-rgb), 0.7)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid var(--border)',
+          // borderBottom: '1px solid var(--border)',
           zIndex: 100,
           transition: 'all 0.3s ease',
         }}
