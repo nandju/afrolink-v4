@@ -5,7 +5,7 @@ import CTASection from '@/components/UI/Insights/CTASection';
 export default function Insights() {
   return (
     <main>
-      <BeforeHeroSection backgroundImage="/images/insights-hero.jpg" compact />
+      <BeforeHeroSection backgroundImage="/images/insights-hero.jpg" />
       <InsightsGrid />
       <CTASection />
     </main>

@@ -27,7 +27,7 @@ const FinancialFreedom = () => {
     <section style={{ marginTop: '11.25rem', background: 'var(--bg)', padding: '8rem 0' }} className="ff-wrapper">
       <div style={{ width: '90%', maxWidth: '1440px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }} className="ff-inner">
         {/* Header */}
-        <header
+        {/* <header
           style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem', maxWidth: '65rem', margin: '0 auto 8rem', textAlign: 'center' }}
           className="ff-header"
         >
@@ -42,10 +42,10 @@ const FinancialFreedom = () => {
               <div style={{ color: 'var(--text-muted)', opacity: 0.85 }}><MaskText phrases={desktopParagraphPhrase} tag="p" /></div>
             </>
           )}
-        </header>
+        </header> */}
 
         {/* Banner */}
-        <div style={{ marginBottom: '8rem', width: '100%', position: 'relative', height: '42rem', overflow: 'hidden', borderRadius: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }} className="ff-banner">
+        {/* <div style={{ marginBottom: '8rem', width: '100%', position: 'relative', height: '42rem', overflow: 'hidden', borderRadius: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }} className="ff-banner">
           <RevealCover />
           <motion.div
             variants={imageVariants}
@@ -60,10 +60,10 @@ const FinancialFreedom = () => {
               <Image src={financialFreedomBanner} alt="Équipe" fill style={{ objectFit: 'cover' }} />
             )}
           </motion.div>
-        </div>
+        </div> */}
 
         {/* Edges */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '4rem' }} className="ff-edges">
+        {/* <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '4rem' }} className="ff-edges">
           {edges.map((edge, i) => (
             <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
@@ -73,7 +73,7 @@ const FinancialFreedom = () => {
               <p style={{ fontSize: '1rem', color: 'var(--text-muted)', opacity: 0.85, lineHeight: 1.6 }}>{edge.details}</p>
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
 
       {/* Brief note */}

@@ -7,7 +7,7 @@ import CTASection from '@/components/UI/Services/CTASection';
 export default function Services() {
   return (
     <main>
-      <BeforeHeroSection backgroundImage="/images/services-hero.jpg" compact />
+      <BeforeHeroSection backgroundImage="/images/services-hero.jpg" />
       <OurExpertise />
       <OurProcess />
       <WhyChooseAfroLink />

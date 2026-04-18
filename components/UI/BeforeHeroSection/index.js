@@ -14,8 +14,9 @@ const BeforeHeroSection = ({
         height: compact ? '45vh' : '85vh',
         minHeight: compact ? '280px' : '500px',
         overflow: 'hidden',
-        marginTop: '-80px', // Offset layout padding
+        marginTop: '-80px',
       }}
+      className={compact ? '' : 'hero-section-full'}
     >
       {/* Background Image */}
       <div
@@ -27,7 +28,7 @@ const BeforeHeroSection = ({
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
           zIndex: 1,
-          transform: 'scale(1.05)', // Subtle zoom for impact
+          transform: 'scale(1.05)',
         }}
         className="hero-bg-image"
       />
@@ -43,19 +44,6 @@ const BeforeHeroSection = ({
           zIndex: 2,
         }}
       />
-
-      {/* Fade to background */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: '150px',
-          background: 'linear-gradient(to bottom, transparent, var(--bg))',
-          zIndex: 3,
-        }}
-      />
       
       <style>{`
         .hero-bg-image {
@@ -64,6 +52,11 @@ const BeforeHeroSection = ({
         @keyframes slowZoom {
           from { transform: scale(1.05); }
           to { transform: scale(1.15); }
+        }
+        @media (min-width: 1024px) {
+          .hero-section-full {
+            height: 100vh !important;
+          }
         }
       `}</style>
     </section>

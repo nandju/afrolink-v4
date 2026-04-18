@@ -41,7 +41,7 @@ const OffersSection = () => {
     <section>
       <div style={{ maxWidth: '1440px', width: '90%', margin: '12.38rem auto 0' }} className="offers-inner">
         {/* Header */}
-        <header
+        {/* <header
           style={{
             display: 'flex',
             flexDirection: 'column',
@@ -61,13 +61,13 @@ const OffersSection = () => {
           ) : (
             <MaskText phrases={desktopParagraphPhrase} tag="p" />
           )}
-        </header>
+        </header> */}
 
         {/* Row 1 */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }} className="offers-row">
+        {/* <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }} className="offers-row">
           <div style={{ flex: 2 }}><OfferCard offer={offers[0]} /></div>
           <div style={{ flex: 1 }}><OfferCard offer={offers[1]} /></div>
-        </div>
+        </div> */}
 
         {/* Row 2 */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginTop: '2rem' }} className="offers-row">

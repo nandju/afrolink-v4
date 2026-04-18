@@ -14,7 +14,7 @@ export default function Home() {
       <HeroSection />
       <Featured />
       <OffersSection />
-      <FinancilaFreedom />
+      {/* <FinancilaFreedom /> */}
       <FAQ />
     </main>
   );

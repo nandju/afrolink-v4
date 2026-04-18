@@ -7,7 +7,7 @@ import CTASection from '@/components/UI/Work/CTASection';
 export default function Work() {
   return (
     <main>
-      <BeforeHeroSection backgroundImage="/images/work-hero.jpg" compact />
+      <BeforeHeroSection backgroundImage="/images/work-hero.jpg" />
       <FeaturedProjects />
       <CaseStudies />
       <BrandsWorkedWith />

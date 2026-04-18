@@ -8,7 +8,7 @@ import CTASection from '@/components/UI/AfroLink/CTASection';
 export default function AfroLink() {
   return (
     <main>
-      <BeforeHeroSection backgroundImage="/images/afrolink-hero.jpg" compact />
+      <BeforeHeroSection backgroundImage="/images/afrolink-hero.jpg" />
       <OurStory />
       <OurVision />
       <OurValues />
