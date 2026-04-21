@@ -47,7 +47,7 @@ const BeforeHeroSection = ({
       
       <style>{`
         .hero-bg-image {
-          animation: slowZoom 20s ease-in-out infinite alternate;
+          animation: slowZoom 14s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
         }
         @keyframes slowZoom {
           from { transform: scale(1.05); }

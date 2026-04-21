@@ -86,8 +86,9 @@ const Header = () => {
           left: 0,
           right: 0,
           padding: '1.25rem 0',
-          background: isScrolled ? 'rgba(var(--bg-rgb), 0.95)' : 'transparent',
-          // borderBottom: '1px solid var(--border)',
+          background: isScrolled ? 'rgba(var(--bg-rgb), 0.6)' : 'transparent',
+          backdropFilter: isScrolled ? 'blur(20px)' : 'none',
+          WebkitBackdropFilter: isScrolled ? 'blur(20px)' : 'none',
           zIndex: 100,
           transition: 'all 0.3s ease',
         }}

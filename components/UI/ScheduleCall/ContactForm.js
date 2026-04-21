@@ -46,7 +46,7 @@ const ContactForm = () => {
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
       >
-        <span style={{ 
+        {/* <span style={{ 
           color: 'var(--gradient-start)', 
           textTransform: 'uppercase', 
           fontWeight: 700, 
@@ -54,7 +54,7 @@ const ContactForm = () => {
           fontSize: '0.85rem'
         }}>
           Contactez-nous
-        </span>
+        </span> */}
         <h2 style={{
           fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
           fontWeight: 800,

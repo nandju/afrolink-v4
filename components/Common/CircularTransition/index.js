@@ -29,7 +29,8 @@ const CircularTransition = ({ children }) => {
     };
 
     const handleComplete = () => {
-      setTimeout(() => setIsTransitioning(false), 500);
+      // setTimeout(() => setIsTransitioning(false), 500);
+      setTimeout(() => setIsTransitioning(false), 1000);
     };
 
     router.events.on('routeChangeStart', handleStart);
@@ -68,9 +69,10 @@ const CircularTransition = ({ children }) => {
           >
             <motion.div
               initial={{ scale: 0, x: '-50%', y: '-50%' }}
-              animate={{ scale: 300, x: '-50%', y: '-50%' }}
+              animate={{ scale: 350, x: '-50%', y: '-50%' }}
               exit={{ scale: 0, x: '-50%', y: '-50%' }}
-              transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+              // transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+              transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
               style={{
                 position: 'absolute',
                 top: '50%',
@@ -86,7 +88,7 @@ const CircularTransition = ({ children }) => {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.5, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
+              transition={{ duration: 0.8, delay: 0.6, ease: [0.4, 0, 0.2, 1] }}
               style={{
                 position: 'absolute',
                 color: 'var(--white)',
