@@ -61,7 +61,7 @@ const Preloader = ({ setComplete }) => {
           }}
           className="preloader-inner"
         >
-          <Image ref={imageRef} src={icImport} alt="Icône de préchargement Afrolink" style={{ width: '25em', height: '25em' }} />
+          <Image ref={imageRef} src={icImport} alt="Icône de préchargement Afrolink" style={{ width: '25em', height: '25em' }} loading="eager" />
           <div style={{ overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
             {logoLetters.map((letter, index) => (
               <div
@@ -91,13 +91,14 @@ const Preloader = ({ setComplete }) => {
         }}
       />
 
-      <style>{`
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @media (max-width: 768px) {
           .preloader-inner { gap: 1rem !important; height: 13rem !important; }
           .preloader-inner img { width: 7rem !important; height: 100% !important; }
           .preloader-inner > div > div { font-size: 6rem !important; }
         }
-      `}</style>
+      `}} suppressHydrationWarning />
     </>
   );
 };

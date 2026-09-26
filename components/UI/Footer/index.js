@@ -78,14 +78,15 @@ const Footer = () => {
         </div>
       </main>
 
-      <style>{`
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @media (max-width: 768px) {
           .footer-middle { flex-direction: column !important; gap: 3.5rem !important; align-items: stretch !important; }
           .footer-nav { grid-template-columns: 1fr !important; gap: 2rem 0 !important; }
           .footer-nav > div { min-width: 0 !important; width: 100% !important; }
           .footer-middle > div { width: 100%; }
         }
-      `}</style>
+      `}} suppressHydrationWarning />
     </footer>
   );
 };

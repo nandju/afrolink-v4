@@ -2,14 +2,14 @@ import BeforeHeroSection from '@/components/UI/BeforeHeroSection';
 import FeaturedProjects from '@/components/UI/Work/FeaturedProjects';
 import CaseStudies from '@/components/UI/Work/CaseStudies';
 import BrandsWorkedWith from '@/components/UI/Work/BrandsWorkedWith';
-import CTASection from '@/components/UI/Work/CTASection';
+import CTASection from '@/components/UI/Services/CTASection';
 
 export default function Work() {
   return (
     <main>
       <BeforeHeroSection backgroundImage="/images/work-hero.jpg" />
       <FeaturedProjects />
-      <CaseStudies />
+      {/* <CaseStudies /> */}
       <BrandsWorkedWith />
       <CTASection />
     </main>

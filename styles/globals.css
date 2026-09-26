@@ -104,11 +104,32 @@ body::-webkit-scrollbar-track {
   margin-right: 5rem;
 }
 
+/* Mobile-specific optimizations for parallax */
+@media (max-width: 768px) {
+  .parallax {
+    -webkit-overflow-scrolling: touch;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+  .parallax .scroller {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+  .scroller span {
+    margin-right: 3rem;
+  }
+}
+
 /* ── Preloader states ── */
 .not_complete {
   display: none;
 }
 .complete {
+  /* Component is complete */
 }
 
 /* ── Animations ── */

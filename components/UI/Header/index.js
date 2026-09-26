@@ -52,10 +52,8 @@ const Header = () => {
   const headerLogo = dark ? afrolinkLogoDark : afrolinkLogoLight;
 
   useEffect(() => {
-    const handleRouteChange = () => setIsOpen(false);
-    router.events.on('routeChangeStart', handleRouteChange);
-    return () => router.events.off('routeChangeStart', handleRouteChange);
-  }, [router]);
+    setIsOpen(false);
+  }, [router.pathname]);
 
   useEffect(() => {
     if (isOpen) {
@@ -216,7 +214,6 @@ const Header = () => {
             <Link
               key={link.url}
               href={link.url}
-              onClick={() => setIsOpen(false)}
               style={{
                 color: isActive(link.url) ? 'var(--gradient-start)' : 'var(--text)',
                 fontSize: '2.5rem',
@@ -251,7 +248,8 @@ const Header = () => {
         </div>
       </div>
 
-      <style>{`
+      <style dangerouslySetInnerHTML={{
+        __html: `
         .header-desktop-nav {
           display: flex;
           align-items: center;
@@ -282,7 +280,7 @@ const Header = () => {
         [data-theme="light"] {
           --bg-rgb: 255, 255, 255;
         }
-      `}</style>
+      `}} suppressHydrationWarning />
     </>
   );
 };

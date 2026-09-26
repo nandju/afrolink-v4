@@ -1,11 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   /* config options here */
-  reactCompiler: true,
+  reactCompiler: false,
   reactStrictMode: true,
     images: {
-    domains: ['images.unsplash.com'],
-        localPatterns: [
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+    ],
+    localPatterns: [
       {
         pathname: '/_next/static/media/**',
       },
