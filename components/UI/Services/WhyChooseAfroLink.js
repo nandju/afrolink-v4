@@ -97,7 +97,12 @@ const WhyChooseAfroLink = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="whyChooseHighlight"
+            style={{
+              background: 'linear-gradient(135deg, rgba(226,124,0,0.15), rgba(255,165,0,0.15))',
+              border: '2px solid rgba(226,124,0,0.3)',
+              borderRadius: '16px',
+              padding: '2rem',
+            }}
           >
             <p
               style={{
