@@ -117,7 +117,9 @@ const BrandsWorkedWith = () => {
             <motion.a
               key={partner.name}
               href={partner.link}
-              initial={{ opacity: 0, scale: 0.5, rotate: Math.random() * 20 - 10 }}
+              target="_blank"
+              rel="noopener noreferrer"
+              initial={{ opacity: 0, scale: 0.5, rotate: ((index % 5) - 2) * 4 }}
               animate={{ opacity: 1, scale: 1, rotate: 0 }}
               transition={{ delay: index * 0.05, duration: 0.5 }}
               whileHover={{ scale: 1.15, rotate: 5 }}
@@ -170,17 +172,18 @@ const BrandsWorkedWith = () => {
               lineHeight: '1.3',
             }}
           >
-            Rejoignez notre réseau de partenaires dès aujourd'hui !
+            Rejoignez notre réseau de partenaires dès aujourd&apos;hui !
           </h3>
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            className="partner-cta-btn"
             style={{
               padding: '1.25rem 3rem',
               fontSize: '1.125rem',
               fontWeight: '700',
               color: 'var(--white)',
-              background: 'linear-gradient(135deg, var(--accent-color), #e67e22)',
+              background: 'var(--accent-gradient)',
               border: 'none',
               borderRadius: '50px',
               cursor: 'pointer',
@@ -258,7 +261,7 @@ const BrandsWorkedWith = () => {
             font-size: 1.25rem !important;
           }
 
-          motion.button {
+          .partner-cta-btn {
             padding: 1rem 2rem !important;
             font-size: 1rem !important;
           }

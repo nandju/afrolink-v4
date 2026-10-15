@@ -9,26 +9,6 @@ import afrolinkLogoDark from '@/public/svgs/logo_Afrolink-removebg-preview_3.png
 import afrolinkLogoLight from '@/public/svgs/logo_Afrolink_noir.png';
 import { links } from './constants';
 
-const SunIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="5" />
-    <line x1="12" y1="1" x2="12" y2="3" />
-    <line x1="12" y1="21" x2="12" y2="23" />
-    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-    <line x1="1" y1="12" x2="3" y2="12" />
-    <line x1="21" y1="12" x2="23" y2="12" />
-    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-  </svg>
-);
-
-const MoonIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-  </svg>
-);
-
 const BarsIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="3" y1="6" x2="21" y2="6" />
@@ -47,29 +27,60 @@ const CloseIcon = () => (
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { dark, toggle } = useTheme();
+  const { dark } = useTheme();
   const router = useRouter();
   const headerLogo = dark ? afrolinkLogoDark : afrolinkLogoLight;
 
   useEffect(() => {
-    setIsOpen(false);
-  }, [router.pathname]);
+    // Close the drawer when a route change actually starts — covers
+    // back/forward navigation that link onClick handlers can't see.
+    if (!router?.events) return undefined;
+
+    const closeDrawer = () => setIsOpen(false);
+
+    try {
+      router.events.on('routeChangeStart', closeDrawer);
+      return () => router.events.off('routeChangeStart', closeDrawer);
+    } catch {
+      return undefined;
+    }
+  }, [router]);
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
+    if (typeof document === 'undefined') return undefined;
+
+    try {
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    } catch {
+      // document may be unavailable during teardown
     }
-    return () => { document.body.style.overflow = ''; };
+
+    return () => {
+      try {
+        document.body.style.overflow = '';
+      } catch {
+        // ignore
+      }
+    };
   }, [isOpen]);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0);
+      try {
+        setIsScrolled(window.scrollY > 0);
+      } catch {
+        // ignore
+      }
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    try {
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      return () => window.removeEventListener('scroll', handleScroll);
+    } catch {
+      return undefined;
+    }
   }, []);
 
   const isActive = (url) => router.pathname === url;
@@ -124,33 +135,8 @@ const Header = () => {
             </nav>
           </div>
 
-          {/* Right: Theme toggle + CTA */}
+          {/* Right: CTA */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexShrink: 0 }}>
-            {/* Theme toggle */}
-            <button
-              onClick={toggle}
-              aria-label={dark ? 'Mode clair' : 'Mode sombre'}
-              style={{
-                background: 'var(--bg-surface)',
-                border: '1px solid var(--border)',
-                borderRadius: '12px',
-                width: '42px',
-                height: '42px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                color: 'var(--text)',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: 'var(--card-shadow)',
-              }}
-              className="theme-toggle"
-            >
-              <div style={{ transform: dark ? 'rotate(0)' : 'rotate(180deg)', transition: 'transform 0.5s ease' }}>
-                {dark ? <SunIcon /> : <MoonIcon />}
-              </div>
-            </button>
-
             {/* Planifier button — desktop only */}
             <div className="header-cta-btn">
               <GetStartedButton padding="0.65rem 1.25rem" />
@@ -195,6 +181,9 @@ const Header = () => {
           transform: isOpen ? 'translateY(0)' : 'translateY(-20px)',
           transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
           paddingTop: '80px',
+          // While fading out the drawer could still intercept taps —
+          // never let a closing overlay swallow navigation clicks.
+          pointerEvents: isOpen ? 'auto' : 'none',
         }}
       >
         {/* Drawer header (absolute top) */}
@@ -214,6 +203,7 @@ const Header = () => {
             <Link
               key={link.url}
               href={link.url}
+              onClick={() => setIsOpen(false)}
               style={{
                 color: isActive(link.url) ? 'var(--gradient-start)' : 'var(--text)',
                 fontSize: '2.5rem',
@@ -238,13 +228,6 @@ const Header = () => {
           transition: 'all 0.5s ease 0.6s'
         }}>
           <GetStartedButton padding="1rem 1.5rem" fullWidth />
-          
-          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'center', gap: '2rem' }}>
-            <button onClick={toggle} style={{ background: 'none', border: 'none', color: 'var(--text)', fontSize: '1rem', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              {dark ? <SunIcon /> : <MoonIcon />}
-              <span>{dark ? 'Mode Clair' : 'Mode Sombre'}</span>
-            </button>
-          </div>
         </div>
       </div>
 
@@ -261,10 +244,6 @@ const Header = () => {
         }
         .logo-link:hover {
           transform: scale(1.02);
-        }
-        .theme-toggle:hover {
-          transform: translateY(-2px);
-          background: var(--bg-surface-hover);
         }
         @media (max-width: 1024px) {
           .header-desktop-nav { gap: 1.5rem; }

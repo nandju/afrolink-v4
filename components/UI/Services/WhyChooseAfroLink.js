@@ -35,7 +35,7 @@ const WhyChooseAfroLink = () => {
               fontSize: '0.875rem',
               fontWeight: '600',
               letterSpacing: '2px',
-              color: 'var(--accent-color)',
+              color: 'var(--gradient-start)',
               marginBottom: '1rem',
               textTransform: 'uppercase',
             }}
@@ -43,10 +43,10 @@ const WhyChooseAfroLink = () => {
             Pourquoi Choisir AfroLink
           </p>
           <h2 className="whyChooseTitle">
-            Une agence digitale créative basée en Côte d'Ivoire
+            Une agence digitale créative basée en Côte d&apos;Ivoire
           </h2>
           <p className="whyChooseSubtitle">
-            Aider les marques à se connecter, s'engager et grandir grâce à une communication impactante
+            Aider les marques à se connecter, s&apos;engager et grandir grâce à une communication impactante
           </p>
         </motion.div>
 
@@ -113,7 +113,7 @@ const WhyChooseAfroLink = () => {
                 lineHeight: '1.6',
               }}
             >
-              "Une communication qui transforme votre vision en réalité digitale"
+              &laquo; Une communication qui transforme votre vision en réalité digitale &raquo;
             </p>
             <ul
               style={{
@@ -143,7 +143,7 @@ const WhyChooseAfroLink = () => {
                     style={{
                       width: '24px',
                       height: '24px',
-                      background: 'var(--accent-color)',
+                      background: 'var(--accent-gradient)',
                       borderRadius: '50%',
                       display: 'flex',
                       alignItems: 'center',
@@ -199,7 +199,7 @@ const WhyChooseAfroLink = () => {
                   height="24"
                   viewBox="0 0 24 24"
                   fill="none"
-                  stroke="var(--accent-color)"
+                  stroke="#c85a00"
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"

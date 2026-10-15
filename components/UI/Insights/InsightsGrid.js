@@ -46,7 +46,7 @@ const NewsCard = ({ item, onClick }) => {
       whileHover={{ y: -10, borderColor: 'var(--gradient-start)' }}
     >
       <div style={{ position: 'relative', width: '100%', height: '240px' }}>
-        <Image src={item.image} alt={item.title} fill style={{ objectFit: 'cover' }} />
+        <Image src={item.image} alt={item.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" style={{ objectFit: 'cover' }} />
         <div style={{
           position: 'absolute', top: '1rem', left: '1rem',
           background: 'var(--accent-gradient)',
@@ -72,7 +72,25 @@ const InsightsGrid = () => {
     <section style={{ padding: '6rem 0', background: 'var(--bg)' }}>
       <div style={{ width: '90%', maxWidth: '1440px', margin: '0 auto' }}>
         <div style={{ marginBottom: '4rem', textAlign: 'center' }}>
-          <h2 style={{ fontSize: '3rem', fontWeight: 700, marginBottom: '1rem' }}>Nos Insights</h2>
+          <span
+            style={{
+              display: 'inline-block',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              color: 'var(--gradient-start)',
+              padding: '0.4rem 1rem',
+              border: '1px solid var(--border-accent)',
+              borderRadius: '100px',
+              marginBottom: '1.25rem',
+            }}
+          >
+            Nos Insights
+          </span>
+          <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, marginBottom: '1rem' }}>
+            Tendances & Analyses
+          </h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>
             Restez informé des dernières tendances du marketing et du digital en Afrique.
           </p>
@@ -108,7 +126,7 @@ const InsightsGrid = () => {
               }}
             >
               <div style={{ position: 'relative', width: '100%', height: '400px' }}>
-                <Image src={selected.image} alt={selected.title} fill style={{ objectFit: 'cover' }} />
+                <Image src={selected.image} alt={selected.title} fill sizes="(max-width: 900px) 100vw, 800px" style={{ objectFit: 'cover' }} />
                 <button 
                   onClick={() => setSelected(null)}
                   style={{

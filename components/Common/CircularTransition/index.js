@@ -1,68 +1,43 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
+import { useIsMobile } from '@/libs/useIsMobile';
+
+const MAX_TRANSITION_MS = 2500; // auto-release if route events never fire
+const EXIT_DELAY_MS = 800;
 
 const CircularTransition = ({ children }) => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [targetPage, setTargetPage] = useState('');
   const router = useRouter();
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useIsMobile();
   const isMounted = useRef(true);
-  const transitionTimeout = useRef(null);
+  const exitTimeout = useRef(null);
+  const lockTimeout = useRef(null);
   const navigationLock = useRef(false);
 
   useEffect(() => {
     isMounted.current = true;
     return () => {
       isMounted.current = false;
-      if (transitionTimeout.current) {
-        clearTimeout(transitionTimeout.current);
-      }
+      if (exitTimeout.current) clearTimeout(exitTimeout.current);
+      if (lockTimeout.current) clearTimeout(lockTimeout.current);
     };
   }, []);
 
-  useEffect(() => {
-    // Safe mobile detection with null checks
-    if (typeof window === 'undefined') return;
-    
-    const checkMobile = () => {
-      try {
-        setIsMobile(window.innerWidth <= 768 || 'ontouchstart' in window);
-      } catch (error) {
-        console.warn('Mobile detection error:', error);
-        setIsMobile(false);
-      }
-    };
-    
-    checkMobile();
-    
-    try {
-      window.addEventListener('resize', checkMobile, { passive: true });
-    } catch (error) {
-      console.warn('Resize listener error:', error);
-    }
-    
-    return () => {
-      try {
-        window.removeEventListener('resize', checkMobile);
-      } catch (error) {
-        console.warn('Resize cleanup error:', error);
-      }
-    };
+  const releaseLock = useCallback(() => {
+    navigationLock.current = false;
+    if (isMounted.current) setIsTransitioning(false);
   }, []);
 
   useEffect(() => {
-    // Comprehensive safety checks
     if (!isMounted.current || typeof window === 'undefined') return;
-    
-    // Skip router events entirely on mobile to prevent interference
+
+    // Never subscribe to router events on mobile — let native
+    // navigation run untouched to avoid pushState conflicts.
     if (isMobile) return;
-    
-    // Ensure router exists and has events
-    if (!router || !router.events) {
-      console.warn('Router or router.events not available');
-      return;
-    }
+
+    if (!router?.events) return;
 
     const pageLabels = {
       '/': 'Accueil',
@@ -74,85 +49,73 @@ const CircularTransition = ({ children }) => {
     };
 
     const handleStart = (url) => {
-      // Multiple safety checks
-      if (!isMounted.current || navigationLock.current || typeof window === 'undefined') {
-        return;
-      }
-      
+      if (!isMounted.current || navigationLock.current) return;
+
       try {
-        // Lock navigation to prevent multiple triggers
         navigationLock.current = true;
-        
-        const path = url?.split('?')[0] || '';
-        const pageName = pageLabels[path] ||
+
+        const path = typeof url === 'string' ? url.split('?')[0] : '';
+        const pageName =
+          pageLabels[path] ||
           path
             .replace('/', '')
             .replace(/-/g, ' ')
-            .replace(/\b\w/g, (char) => char?.toUpperCase?.() || '');
-        
-        if (isMounted.current) {
-          setTargetPage(pageName);
-          setIsTransitioning(true);
-        }
-      } catch (error) {
-        console.warn('Transition start error:', error);
+            .replace(/\b\w/g, (c) => c.toUpperCase());
+
+        if (!isMounted.current) return;
+        setTargetPage(pageName);
+        setIsTransitioning(true);
+
+        // Safety: release the lock even if complete/error never fires
+        // (cancelled navigation, bfcache, aborted fetch, etc.)
+        if (lockTimeout.current) clearTimeout(lockTimeout.current);
+        lockTimeout.current = setTimeout(() => {
+          if (isMounted.current) releaseLock();
+        }, MAX_TRANSITION_MS);
+      } catch {
         navigationLock.current = false;
       }
     };
 
     const handleComplete = () => {
       if (!isMounted.current) return;
-      
+
       try {
-        // Clear any existing timeout
-        if (transitionTimeout.current) {
-          clearTimeout(transitionTimeout.current);
-        }
-        
-        // Reset transition state with delay
-        transitionTimeout.current = setTimeout(() => {
-          if (isMounted.current) {
-            setIsTransitioning(false);
-            navigationLock.current = false;
-          }
-        }, 800);
-      } catch (error) {
-        console.warn('Transition complete error:', error);
-        // Fallback
-        if (isMounted.current) {
-          setIsTransitioning(false);
-          navigationLock.current = false;
-        }
+        if (lockTimeout.current) clearTimeout(lockTimeout.current);
+        if (exitTimeout.current) clearTimeout(exitTimeout.current);
+
+        exitTimeout.current = setTimeout(() => {
+          if (isMounted.current) releaseLock();
+        }, EXIT_DELAY_MS);
+      } catch {
+        releaseLock();
       }
     };
 
-    // Safe event listener setup
     try {
       router.events.on('routeChangeStart', handleStart);
       router.events.on('routeChangeComplete', handleComplete);
       router.events.on('routeChangeError', handleComplete);
-    } catch (error) {
-      console.warn('Router event listener setup error:', error);
+    } catch {
+      // Router events unavailable — transitions simply won't run.
     }
 
     return () => {
       try {
-        if (router?.events) {
-          router.events.off('routeChangeStart', handleStart);
-          router.events.off('routeChangeComplete', handleComplete);
-          router.events.off('routeChangeError', handleComplete);
-        }
-        if (transitionTimeout.current) {
-          clearTimeout(transitionTimeout.current);
-        }
-        navigationLock.current = false;
-      } catch (error) {
-        console.warn('Router event cleanup error:', error);
+        router?.events?.off('routeChangeStart', handleStart);
+        router?.events?.off('routeChangeComplete', handleComplete);
+        router?.events?.off('routeChangeError', handleComplete);
+      } catch {
+        // ignore
       }
+      if (exitTimeout.current) clearTimeout(exitTimeout.current);
+      if (lockTimeout.current) clearTimeout(lockTimeout.current);
+      navigationLock.current = false;
     };
-  }, [router, isMobile]);
+  }, [router, isMobile, releaseLock]);
 
-  // Disable transitions entirely on mobile to prevent navigation interference
+  // On mobile/tablet: render children directly, zero overlay,
+  // zero event interference with native navigation.
   if (isMobile) {
     return <>{children}</>;
   }
@@ -160,8 +123,9 @@ const CircularTransition = ({ children }) => {
   return (
     <>
       <AnimatePresence mode="wait">
-        {isTransitioning && isMounted.current && (
+        {isTransitioning && (
           <motion.div
+            key="page-transition"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -177,7 +141,6 @@ const CircularTransition = ({ children }) => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              // Remove pointerEvents: 'none' to prevent navigation blocking
             }}
           >
             <motion.div

@@ -12,22 +12,46 @@ const Preloader = ({ setComplete }) => {
   const wrapperRef = useRef(null);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+
+    let mounted = true;
     const timeline = gsap.timeline({ defaults: { ease: 'back.out(1.7)' } });
 
-    timeline.to(imageRef.current, { rotate: '360deg', duration: 1.4 });
-    timeline.to(imageRef.current, { y: '-100%' });
-    timeline.to(spans.current, { y: '-100%', duration: 1.4, stagger: 0.05 });
+    if (imageRef.current) {
+      timeline.to(imageRef.current, { rotate: '360deg', duration: 1.4 });
+      timeline.to(imageRef.current, { y: '-100%' });
+    }
+    if (spans.current.length) {
+      timeline.to(spans.current, { y: '-100%', duration: 1.4, stagger: 0.05 });
+    }
     timeline.to(
-      [wrapperRef.current, secondOverlayRef.current],
-      { scaleY: 0, transformOrigin: 'top', duration: 1, stagger: 0.2, onComplete: () => setComplete(true) },
+      [wrapperRef.current, secondOverlayRef.current].filter(Boolean),
+      {
+        scaleY: 0,
+        transformOrigin: 'top',
+        duration: 1,
+        stagger: 0.2,
+        onComplete: () => {
+          if (mounted) setComplete(true);
+        },
+      },
       '-=0.8',
     );
-    timeline.to(secondOverlayRef.current, {
-      scaleY: 0,
-      transformOrigin: 'top',
-      duration: 1,
-      ease: [0.83, 0, 0.17, 1],
-    });
+    if (secondOverlayRef.current) {
+      timeline.to(secondOverlayRef.current, {
+        scaleY: 0,
+        transformOrigin: 'top',
+        duration: 1,
+        ease: [0.83, 0, 0.17, 1],
+      });
+    }
+
+    return () => {
+      mounted = false;
+      // Kill the timeline so GSAP never animates detached nodes
+      // or calls setComplete after unmount (StrictMode double-mount).
+      timeline.kill();
+    };
   }, [setComplete]);
 
   return (

@@ -38,9 +38,21 @@ const OurProcess = () => {
           max-width: 640px;
           margin: 0 auto 5rem;
         }
+        .process-label {
+          display: inline-block;
+          font-size: 0.75rem;
+          font-weight: 700;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: var(--gradient-start);
+          padding: 0.4rem 1rem;
+          border: 1px solid var(--border-accent);
+          border-radius: 100px;
+          margin-bottom: 1.25rem;
+        }
         .process-header h2 {
           font-size: clamp(2rem, 4vw, 3rem);
-          font-weight: 700;
+          font-weight: 800;
           color: var(--text);
           margin-bottom: 0.75rem;
         }
@@ -146,8 +158,9 @@ const OurProcess = () => {
       `}</style>
 
       <div className="process-header">
-        <MaskText phrases={['Notre Processus']} tag="h2" />
-        <MaskText phrases={['Une méthode éprouvée pour votre succès']} tag="p" />
+        <span className="process-label">Notre Processus</span>
+        <MaskText phrases={['Une méthode éprouvée pour votre succès']} tag="h2" />
+        <MaskText phrases={['De la découverte au lancement, chaque étape est maîtrisée']} tag="p" />
       </div>
 
       <div className="process-track">

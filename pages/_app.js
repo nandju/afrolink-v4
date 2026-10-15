@@ -14,33 +14,40 @@ const poppins = Poppins({
 
 function AppWrapper({ Component, pageProps }) {
   useEffect(() => {
-    // Global error handler for navigation issues
+    if (typeof window === 'undefined') return undefined;
+
+    // Last-resort safety net: a known mobile-browser race condition can
+    // throw "Cannot read properties of null (reading 'dispatchEvent')"
+    // inside history.pushState during route teardown. Swallow ONLY that
+    // exact error so real errors still surface.
+    const isDispatchEventError = (err) =>
+      typeof err?.message === 'string' &&
+      err.message.includes('dispatchEvent') &&
+      err.message.includes('null');
+
     const handleError = (event) => {
-      if (event.error && event.error.message && event.error.message.includes('dispatchEvent')) {
-        console.warn('Navigation error caught and prevented:', event.error);
+      if (isDispatchEventError(event.error)) {
+        console.warn('Suppressed known navigation race error:', event.error);
         event.preventDefault();
-        return false;
       }
     };
 
-    // Handle unhandled promise rejections (common with navigation)
     const handleUnhandledRejection = (event) => {
-      if (event.reason && event.reason.message && event.reason.message.includes('dispatchEvent')) {
-        console.warn('Navigation promise rejection caught:', event.reason);
+      if (isDispatchEventError(event.reason)) {
+        console.warn('Suppressed known navigation race rejection:', event.reason);
         event.preventDefault();
-        return false;
       }
     };
 
-    // Add global error listeners
-    if (typeof window !== 'undefined') {
+    try {
       window.addEventListener('error', handleError);
       window.addEventListener('unhandledrejection', handleUnhandledRejection);
-
       return () => {
         window.removeEventListener('error', handleError);
         window.removeEventListener('unhandledrejection', handleUnhandledRejection);
       };
+    } catch {
+      return undefined;
     }
   }, []);
 

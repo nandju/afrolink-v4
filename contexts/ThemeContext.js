@@ -1,27 +1,18 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useEffect } from 'react';
 
+// Theme is locked to dark — the light-mode toggle was removed by design.
 const ThemeContext = createContext({ dark: true, toggle: () => {} });
 
 export const useTheme = () => useContext(ThemeContext);
 
 export const ThemeProvider = ({ children }) => {
-  const [dark, setDark] = useState(true);
-  const [mounted, setMounted] = useState(false);
-
   useEffect(() => {
-    setMounted(true);
-    const saved = localStorage.getItem('afrolink-theme');
-    if (saved) setDark(saved === 'dark');
+    if (typeof document === 'undefined') return;
+    document.documentElement.setAttribute('data-theme', 'dark');
   }, []);
 
-  useEffect(() => {
-    if (!mounted) return;
-    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-    localStorage.setItem('afrolink-theme', dark ? 'dark' : 'light');
-  }, [dark, mounted]);
-
   return (
-    <ThemeContext.Provider value={{ dark, toggle: () => setDark(d => !d) }}>
+    <ThemeContext.Provider value={{ dark: true, toggle: () => {} }}>
       {children}
     </ThemeContext.Provider>
   );

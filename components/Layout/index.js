@@ -1,107 +1,58 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { ReactLenis } from 'lenis/react';
 import Footer from '@/components/UI/Footer';
 import Preloader from '@/components/UI/Preloader';
 import CircularTransition from '@/components/Common/CircularTransition';
 import Header from '@/components/UI/Header';
+import { useIsMobile } from '@/libs/useIsMobile';
 
 const Layout = ({ children }) => {
   const [complete, setComplete] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const isMounted = useRef(true);
+  const isMobile = useIsMobile();
 
-  useEffect(() => {
-    isMounted.current = true;
-    return () => {
-      isMounted.current = false;
-    };
-  }, []);
+  const content = (
+    <>
+      <Preloader setComplete={setComplete} />
+      <div className={complete ? 'complete' : 'not_complete'}>
+        <Header />
+        <CircularTransition>
+          <div style={{ paddingTop: '80px' }}>{children}</div>
+        </CircularTransition>
+        <Footer />
+      </div>
+    </>
+  );
 
-  useEffect(() => {
-    // Safe mobile detection
-    if (typeof window === 'undefined') return;
-    
-    const checkMobile = () => {
-      try {
-        setIsMobile(window.innerWidth <= 768 || 'ontouchstart' in window);
-      } catch (error) {
-        console.warn('Mobile detection error:', error);
-        setIsMobile(false);
-      }
-    };
-    
-    checkMobile();
-    
-    try {
-      window.addEventListener('resize', checkMobile, { passive: true });
-    } catch (error) {
-      console.warn('Resize listener error:', error);
-    }
-    
-    return () => {
-      try {
-        window.removeEventListener('resize', checkMobile);
-      } catch (error) {
-        console.warn('Resize cleanup error:', error);
-      }
-    };
-  }, []);
-
-  // Disable Lenis entirely on mobile to prevent navigation interference
+  // Mobile/tablet: no Lenis at all — native scrolling only, so the
+  // smooth-scroll RAF loop can never interfere with navigation.
   if (isMobile) {
-    return (
-      <>
-        <Preloader setComplete={setComplete} />
-        <div className={complete ? 'complete' : 'not_complete'}>
-          <Header />
-          <CircularTransition>
-            <div style={{ paddingTop: '80px' }}>
-              {children}
-            </div>
-          </CircularTransition>
-          <Footer />
-        </div>
-      </>
-    );
+    return content;
   }
 
   return (
-    <ReactLenis 
-      root 
+    <ReactLenis
+      root
       options={{
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         smoothWheel: true,
-        smoothTouch: false, // Always disabled to prevent navigation interference
-        touchMultiplier: 0, // Completely disable touch effects
+        smoothTouch: false,
         normalizeWheel: true,
-        wheelMultiplier: 0.8, // Reduced sensitivity
+        wheelMultiplier: 0.8,
         duration: 1.2,
-        // Additional safety options
         prevent: (node) => {
-          // Prevent Lenis from interfering with navigation elements
-          if (!node || !isMounted.current) return false;
+          // Never hijack wheel/scroll events on interactive elements.
+          if (!node || typeof node.closest !== 'function') return false;
           try {
-            return node.tagName === 'A' || 
-                   node.tagName === 'BUTTON' || 
-                   node.closest('a') || 
-                   node.closest('button') ||
-                   node.closest('[role="button"]');
-          } catch (error) {
+            return Boolean(
+              node.closest('a, button, [role="button"], nav, input, textarea, select'),
+            );
+          } catch {
             return false;
           }
         },
       }}
     >
-      <Preloader setComplete={setComplete} />
-      <div className={complete ? 'complete' : 'not_complete'}>
-        <Header />
-        <CircularTransition>
-          <div style={{ paddingTop: '80px' }}>
-            {children}
-          </div>
-        </CircularTransition>
-        <Footer />
-      </div>
+      {content}
     </ReactLenis>
   );
 };
