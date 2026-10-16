@@ -1,6 +1,6 @@
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import MaskText from '@/components/Common/MaskText';
-import GetStartedButton from '@/components/Common/GetStartedButton';
 
 const PhoneIcon = () => (
   <svg
@@ -18,6 +18,13 @@ const PhoneIcon = () => (
   </svg>
 );
 
+const ArrowIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <line x1="5" y1="12" x2="19" y2="12" />
+    <polyline points="12 5 19 12 12 19" />
+  </svg>
+);
+
 const CTASection = () => {
   return (
     <section className="cta-section">
@@ -27,71 +34,107 @@ const CTASection = () => {
           background: var(--bg);
         }
         .cta-banner {
-          display: grid;
-          grid-template-columns: 42% 58%;
-          gap: 0;
+          position: relative;
           max-width: 1200px;
           margin: 0 auto;
           background: var(--accent-gradient);
-          border-radius: 24px;
+          border-radius: 28px;
           overflow: hidden;
-          box-shadow: 0 20px 60px rgba(200, 90, 0, 0.35);
-          position: relative;
+          min-height: 420px;
+          box-shadow: 0 25px 70px rgba(200, 90, 0, 0.35);
         }
-        .cta-glow {
+        .cta-blob {
           position: absolute;
-          inset: 0;
-          background: radial-gradient(circle at 85% 15%, rgba(255,255,255,0.18) 0%, transparent 45%);
+          top: -20%;
+          right: -10%;
+          width: 58%;
+          height: 140%;
+          background: #fff4e0;
+          border-radius: 55% 0 0 55%;
+          pointer-events: none;
+        }
+        .cta-img-wrap {
+          position: absolute;
+          right: 0;
+          bottom: 0;
+          width: 52%;
+          height: 112%;
+          display: flex;
+          align-items: flex-end;
+          justify-content: flex-end;
           pointer-events: none;
           z-index: 1;
         }
-        .cta-image-wrap {
-          position: relative;
-          min-height: 380px;
-        }
-        .cta-image {
-          position: absolute;
-          inset: 0;
-          width: 100%;
+        .cta-img {
           height: 100%;
-          object-fit: cover;
+          width: auto;
+          max-width: 100%;
+          object-fit: contain;
+          object-position: bottom right;
           display: block;
+          filter: drop-shadow(-15px 10px 30px rgba(60, 20, 0, 0.25));
         }
         .cta-content {
-          padding: 3.5rem 3rem;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
           position: relative;
-          z-index: 1;
+          z-index: 2;
+          width: 55%;
+          padding: 3.5rem 1rem 3.5rem 3.5rem;
         }
         .cta-label {
-          font-size: 0.75rem;
+          font-size: 0.72rem;
           font-weight: 700;
-          letter-spacing: 0.18em;
+          letter-spacing: 0.22em;
           text-transform: uppercase;
           color: rgba(255, 255, 255, 0.85);
-          margin-bottom: 1rem;
+          margin-bottom: 1.25rem;
         }
         .cta-content h2 {
-          font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+          font-size: clamp(1.9rem, 3.6vw, 2.8rem);
           font-weight: 800;
-          line-height: 1.2;
+          line-height: 1.15;
           color: #ffffff;
-          margin-bottom: 1rem;
+          margin-bottom: 1.1rem;
         }
         .cta-text {
           font-size: 1.05rem;
           line-height: 1.7;
-          color: rgba(255, 255, 255, 0.9);
-          max-width: 46ch;
-          margin-bottom: 2rem;
+          color: rgba(255, 255, 255, 0.92);
+          max-width: 40ch;
+          margin-bottom: 2.25rem;
         }
         .cta-actions {
           display: flex;
           align-items: center;
-          gap: 1.25rem;
+          gap: 1.1rem;
           flex-wrap: wrap;
+        }
+        .cta-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.9rem;
+          background: #3a1e04;
+          color: #ffffff;
+          font-size: 1rem;
+          font-weight: 700;
+          padding: 0.6rem 0.6rem 0.6rem 1.5rem;
+          border-radius: 100px;
+          text-decoration: none;
+          transition: transform 0.25s ease, background 0.25s ease;
+        }
+        .cta-btn:hover {
+          background: #4a2805;
+          transform: translateY(-2px);
+        }
+        .cta-btn-icon {
+          width: 42px;
+          height: 42px;
+          border-radius: 50%;
+          background: var(--accent-gradient);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #3a1e04;
+          flex-shrink: 0;
         }
         .cta-phone {
           display: inline-flex;
@@ -112,28 +155,35 @@ const CTASection = () => {
           background: rgba(255, 255, 255, 0.28);
           transform: translateY(-2px);
         }
-        .cta-or {
-          color: rgba(255, 255, 255, 0.75);
-          font-size: 0.95rem;
-        }
         @media (max-width: 900px) {
           .cta-banner {
-            grid-template-columns: 1fr;
-          }
-          .cta-image-wrap {
-            min-height: 240px;
-            order: 2;
+            display: flex;
+            flex-direction: column;
           }
           .cta-content {
-            padding: 2.5rem 2rem;
+            width: 100%;
+            padding: 2.75rem 2rem 1rem;
             text-align: center;
-            align-items: center;
           }
           .cta-text {
             max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
           }
           .cta-actions {
             justify-content: center;
+          }
+          .cta-blob {
+            display: none;
+          }
+          .cta-img-wrap {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            order: 2;
+          }
+          .cta-img {
+            object-position: bottom center;
           }
         }
         @media (max-width: 480px) {
@@ -141,25 +191,31 @@ const CTASection = () => {
             padding: 3.5rem 1rem;
           }
           .cta-content {
-            padding: 2rem 1.25rem;
+            padding: 2.25rem 1.25rem 0.5rem;
           }
           .cta-actions {
             flex-direction: column;
             gap: 1rem;
             width: 100%;
           }
+          .cta-btn {
+            justify-content: center;
+          }
           .cta-phone {
             width: 100%;
             justify-content: center;
+          }
+          .cta-img-wrap {
+            height: 240px;
           }
         }
       `}</style>
 
       <div className="cta-banner">
-        <div className="cta-glow" />
+        <div className="cta-blob" />
         <motion.div
-          className="cta-image-wrap"
-          initial={{ opacity: 0, x: -30 }}
+          className="cta-img-wrap"
+          initial={{ opacity: 0, x: 40 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.7, ease: [0.33, 1, 0.68, 1] }}
@@ -167,13 +223,13 @@ const CTASection = () => {
           <img
             src="/images/section-service.png"
             alt="Équipe AfroLink prête à vous accompagner"
-            className="cta-image"
+            className="cta-img"
           />
         </motion.div>
 
         <motion.div
           className="cta-content"
-          initial={{ opacity: 0, x: 30 }}
+          initial={{ opacity: 0, x: -40 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.7, ease: [0.33, 1, 0.68, 1] }}
@@ -189,12 +245,16 @@ const CTASection = () => {
             pensée pour vos objectifs.
           </p>
           <div className="cta-actions">
+            <Link href="/schedule-call" className="cta-btn">
+              Planifier un appel
+              <span className="cta-btn-icon">
+                <ArrowIcon />
+              </span>
+            </Link>
             <a href="tel:+225XXXXXXXXXX" className="cta-phone">
               <PhoneIcon />
               <span>+225 XX XX XX XX XX</span>
             </a>
-            <span className="cta-or">Ou</span>
-            <GetStartedButton padding="0.9rem 1.75rem" />
           </div>
         </motion.div>
       </div>
