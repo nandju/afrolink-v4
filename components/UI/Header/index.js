@@ -5,8 +5,8 @@ import { useRouter } from 'next/router';
 import AnimatedLink from '@/components/Common/AnimatedLink';
 import GetStartedButton from '@/components/Common/GetStartedButton';
 import { useTheme } from '@/contexts/ThemeContext';
-import afrolinkLogoDark from '@/public/svgs/logo_Afrolink-removebg-preview_3.png';
-import afrolinkLogoLight from '@/public/svgs/logo_Afrolink_noir.png';
+import afrolinkLogoDark from '@/public/images/logo/afrolink-logo-white.png';
+import afrolinkLogoLight from '@/public/images/logo/afrolink-logo-black.png';
 import { links } from './constants';
 
 const BarsIcon = () => (

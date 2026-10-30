@@ -56,6 +56,7 @@ function AppWrapper({ Component, pageProps }) {
       <>
         <Head>
           <title>Afrolink</title>
+          <link rel="icon" type="image/png" href="/favicon.png" />
           <meta name="application-name" content="Afrolink" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>

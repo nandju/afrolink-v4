@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { gsap } from 'gsap';
-import icImport from '@/public/svgs/ic_import.svg';
+import icImport from '@/public/images/logo/afrolink-chip.png';
 
 const logoLetters = Array.from('Afro');
 
@@ -85,7 +85,7 @@ const Preloader = ({ setComplete }) => {
           }}
           className="preloader-inner"
         >
-          <Image ref={imageRef} src={icImport} alt="Icône de préchargement Afrolink" style={{ width: '25em', height: '25em' }} loading="eager" />
+          <Image ref={imageRef} src={icImport} alt="Icône de préchargement Afrolink" style={{ width: '14em', height: 'auto' }} loading="eager" />
           <div style={{ overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
             {logoLetters.map((letter, index) => (
               <div
