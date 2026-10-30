@@ -1,6 +1,14 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useTheme } from '@/contexts/ThemeContext';
+import { parsePayload, validatePayload } from '@/lib/validation';
+import { getEmailJsConfigError, sendTeamNotification } from '@/lib/emailjs';
+import afrolinkLogo from '@/public/images/logo/afrolink-logo-white.png';
+
+// Délai minimum entre deux demandes réussies (anti-spam côté client).
+const RESUBMIT_COOLDOWN_MS = 60 * 1000;
 
 const ContactForm = () => {
   const { dark } = useTheme();
@@ -12,18 +20,76 @@ const ContactForm = () => {
     message: '',
     acceptComms: false,
     acceptAdvisor: false,
+    website: '', // honeypot anti-spam
   });
+  const [status, setStatus] = useState('idle'); // idle | submitting | success | error
+  const [statusMessage, setStatusMessage] = useState('');
+  const lastSuccessAt = useRef(0);
+
+  // Verrouille le scroll de la page pendant l'écran de succès.
+  useEffect(() => {
+    if (status !== 'success') return undefined;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [status]);
 
   const handleChange = (e) => {
     const { name, type, value, checked } = e.target;
     setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    // Add success feedback
-    alert("Message envoyé ! Nous vous recontacterons bientôt.");
+    if (status === 'submitting') return;
+
+    // Honeypot : rempli uniquement par des bots — succès factice silencieux.
+    if (formData.website) {
+      setStatus('success');
+      return;
+    }
+
+    // Anti-resoumission : une demande réussie verrouille le formulaire 60 s.
+    if (Date.now() - lastSuccessAt.current < RESUBMIT_COOLDOWN_MS) {
+      setStatus('error');
+      setStatusMessage('Votre demande vient déjà d’être transmise. Veuillez patienter un instant.');
+      return;
+    }
+
+    // Validation partagée (mêmes règles que précédemment côté serveur).
+    const payload = parsePayload(formData);
+    const { valid, errors } = validatePayload(payload);
+    if (!valid) {
+      setStatus('error');
+      setStatusMessage(Object.values(errors)[0] || 'Veuillez vérifier les champs du formulaire.');
+      return;
+    }
+
+    const configError = getEmailJsConfigError();
+    if (configError) {
+      setStatus('error');
+      setStatusMessage(configError);
+      return;
+    }
+
+    setStatus('submitting');
+    setStatusMessage('');
+
+    // 1. Notification à l'équipe — le succès de la demande repose sur cet envoi.
+    try {
+      await sendTeamNotification(payload);
+    } catch (err) {
+      console.error('[schedule-call] EmailJS team notification failed:', err);
+      setStatus('error');
+      setStatusMessage("Votre demande n'a pas pu être transmise. Veuillez réessayer dans quelques instants.");
+      return;
+    }
+
+    lastSuccessAt.current = Date.now();
+    setStatus('success');
+    setStatusMessage('');
   };
 
   const inputStyle = {
@@ -143,22 +209,49 @@ const ContactForm = () => {
           <textarea id="message" name="message" value={formData.message} onChange={handleChange} required style={{ ...inputStyle, minHeight: '120px', resize: 'none' }} placeholder="Dites-nous tout..." className="form-input" />
         </div>
 
+        {/* Honeypot anti-spam — invisible pour les humains */}
+        <div style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', overflow: 'hidden' }} aria-hidden="true">
+          <label htmlFor="website">Site web</label>
+          <input id="website" type="text" name="website" value={formData.website} onChange={handleChange} tabIndex={-1} autoComplete="off" />
+        </div>
+
         {/* Checkboxes */}
         <div style={{ marginTop: '3rem', display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
           <label style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.95rem', color: 'var(--text-muted)', cursor: 'pointer' }}>
             <input type="checkbox" name="acceptComms" checked={formData.acceptComms} onChange={handleChange} style={{ width: '20px', height: '20px', accentColor: 'var(--gradient-start)' }} />
-            <span>J'accepte de recevoir des actualités de la part d'AfroLink.</span>
+            <span>J&rsquo;accepte de recevoir des actualités de la part d&rsquo;AfroLink.</span>
           </label>
 
           <label style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.95rem', color: 'var(--text-muted)', cursor: 'pointer' }}>
             <input type="checkbox" name="acceptAdvisor" checked={formData.acceptAdvisor} onChange={handleChange} style={{ width: '20px', height: '20px', accentColor: 'var(--gradient-start)' }} required />
-            <span>J'accepte d'être contacté par un conseiller stratégique.</span>
+            <span>J&rsquo;accepte d&rsquo;être contacté par un conseiller stratégique.</span>
           </label>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '4rem' }}>
+        {/* Message d'erreur */}
+        {statusMessage && (
+          <div
+            role="alert"
+            style={{
+              marginTop: '2.5rem',
+              padding: '1rem 1.5rem',
+              borderRadius: '14px',
+              fontSize: '1rem',
+              fontWeight: 500,
+              lineHeight: 1.5,
+              background: 'rgba(220, 60, 40, 0.12)',
+              border: '1px solid rgba(220, 60, 40, 0.4)',
+              color: '#e05a45',
+            }}
+          >
+            {statusMessage}
+          </div>
+        )}
+
+        <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '3rem' }}>
           <button
             type="submit"
+            disabled={status === 'submitting'}
             style={{ 
               padding: '1.25rem 3.5rem', 
               background: 'var(--accent-gradient)', 
@@ -167,11 +260,13 @@ const ContactForm = () => {
               borderRadius: '100px', 
               fontSize: '1.1rem', 
               fontWeight: 700, 
-              cursor: 'pointer', 
+              cursor: status === 'submitting' ? 'not-allowed' : 'pointer', 
+              opacity: status === 'submitting' ? 0.7 : 1,
               transition: 'all 0.3s ease',
               boxShadow: '0 10px 30px rgba(226, 124, 0, 0.3)'
             }}
             onMouseEnter={(e) => {
+              if (status === 'submitting') return;
               e.currentTarget.style.transform = 'translateY(-3px)';
               e.currentTarget.style.boxShadow = '0 15px 40px rgba(226, 124, 0, 0.4)';
             }}
@@ -180,15 +275,156 @@ const ContactForm = () => {
               e.currentTarget.style.boxShadow = '0 10px 30px rgba(226, 124, 0, 0.3)';
             }}
           >
-            Lancer la collaboration
+            {status === 'submitting' ? 'Envoi en cours…' : 'Lancer la collaboration'}
           </button>
         </div>
       </motion.form>
+
+      {/* Écran de succès — affiché uniquement après confirmation EmailJS */}
+      <AnimatePresence>
+        {status === 'success' && (
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="success-title"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 9500,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '1.5rem',
+              background: 'rgba(0, 0, 0, 0.88)',
+              backdropFilter: 'blur(8px)',
+            }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.88, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 20 }}
+              transition={{ duration: 0.45, ease: [0.33, 1, 0.68, 1] }}
+              className="success-card"
+              style={{
+                width: '100%',
+                maxWidth: '620px',
+                background: '#0A0A0A',
+                border: '1px solid rgba(255, 165, 0, 0.25)',
+                borderRadius: '28px',
+                padding: '3rem 2.5rem',
+                textAlign: 'center',
+                boxShadow: '0 30px 80px rgba(0, 0, 0, 0.6), 0 0 60px rgba(200, 90, 0, 0.12)',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2rem' }}>
+                <Image src={afrolinkLogo} alt="AfroLink" style={{ height: '2.5rem', width: 'auto' }} />
+              </div>
+
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.25, type: 'spring', stiffness: 300, damping: 18 }}
+                style={{
+                  width: '76px',
+                  height: '76px',
+                  margin: '0 auto 1.75rem',
+                  borderRadius: '20px',
+                  background: '#C85A00',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 12px 35px rgba(200, 90, 0, 0.45)',
+                }}
+              >
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </motion.div>
+
+              <h3 id="success-title" style={{ fontSize: '1.7rem', fontWeight: 800, color: '#fff', margin: '0 0 0.9rem' }}>
+                Demande envoyée !
+              </h3>
+              <p style={{ fontSize: '1.05rem', color: 'rgba(255,255,255,0.75)', margin: '0 0 2rem', lineHeight: 1.6 }}>
+                Votre demande a bien été transmise à l&apos;équipe AfroLink.
+              </p>
+
+              <div style={{
+                background: '#141414',
+                border: '1px solid rgba(255, 165, 0, 0.15)',
+                borderRadius: '16px',
+                padding: '1.5rem 1.75rem',
+                textAlign: 'left',
+                display: 'flex',
+                gap: '1rem',
+                alignItems: 'flex-start',
+                marginBottom: '2rem',
+              }}>
+                <span style={{
+                  flexShrink: 0,
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '12px',
+                  background: 'rgba(200, 90, 0, 0.18)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFA500" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <rect x="2" y="4" width="20" height="16" rx="2" />
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                  </svg>
+                </span>
+                <div>
+                  <p style={{ fontSize: '1.05rem', fontWeight: 700, color: '#fff', margin: '0 0 0.4rem' }}>
+                    C&apos;est tout bon !
+                  </p>
+                  <p style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.65)', margin: 0, lineHeight: 1.6 }}>
+                    Notre équipe a bien reçu vos informations et reviendra vers vous pour échanger sur votre projet.
+                  </p>
+                </div>
+              </div>
+
+              <p style={{ fontSize: '1rem', fontWeight: 700, color: '#FFA500', margin: '0 0 2rem' }}>
+                Merci de faire confiance à AfroLink.
+              </p>
+
+              <Link
+                href="/"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.6rem',
+                  padding: '1rem 2.5rem',
+                  background: 'var(--accent-gradient)',
+                  color: '#fff',
+                  borderRadius: '100px',
+                  fontSize: '1.05rem',
+                  fontWeight: 700,
+                  textDecoration: 'none',
+                  transition: 'transform 0.25s ease, box-shadow 0.25s ease',
+                  boxShadow: '0 10px 30px rgba(226, 124, 0, 0.35)',
+                }}
+              >
+                Retour à l&apos;accueil
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </Link>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <style>{`
         @media (max-width: 768px) { 
           .form-row { grid-template-columns: 1fr !important; gap: 1.5rem !important; } 
           .contact-card-form { padding: 2rem !important; border-radius: 24px !important; }
+          .success-card { padding: 2.25rem 1.5rem !important; border-radius: 22px !important; }
         }
         .form-input:focus {
            border-bottom-color: var(--gradient-start) !important;
